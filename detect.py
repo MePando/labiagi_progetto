@@ -34,7 +34,7 @@ print()
 # %%
 # Load pipeline config and build a detection model
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("Trying opening the pipeline.config...", end='\t')
+print("Trying loading the pipeline.config...", end='\t')
 configs = config_util.get_configs_from_pipeline_file(files['PIPELINE_CONFIG'])
 model_config = configs['model']
 detection_model = model_builder.build(model_config=model_config, is_training=False)
@@ -44,9 +44,9 @@ print()
 # %%
 # Restore checkpoint
 # ~~~~~~~~~~~~~~~~~~~~
-print("Trying opening the checkpoint...", end='\t')
+print("Trying restoring the checkpoint...", end='\t')
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
-ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-9')).expect_partial()
+ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-15')).expect_partial()
 print("[RESTORED]")
 print()
 
@@ -64,7 +64,7 @@ def detect_fn(image):
 # %%
 # Load label map data (for plotting)
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-print("Trying opening the label_map...", end='\t')
+print("Trying loading the label_map...", end='\t')
 category_index = label_map_util.create_category_index_from_labelmap(files['LABELMAP'], use_display_name=True)
 print("[LOADED]")
 print()
@@ -115,7 +115,9 @@ while cap.isOpened():
           min_score_thresh=.6,
           agnostic_mode=False)
 
+    # %%
     # Display output
+    # ~~~~~~~~~~~~~~~
     cv2.imshow('object detection', cv2.resize(image_np_with_detections, (800, 600))) #800 600
 
     if cv2.waitKey(25) & 0xFF == ord('q'):
