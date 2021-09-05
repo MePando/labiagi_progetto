@@ -129,6 +129,8 @@ while cap.isOpened():
     label_id_offset = 1
     image_np_with_detections = image_np.copy()
 
+    score = detections['detection_scores'][0] - 0.0000001
+
     viz_utils.visualize_boxes_and_labels_on_image_array(
           image_np_with_detections,
           detections['detection_boxes'],
@@ -137,7 +139,7 @@ while cap.isOpened():
           category_index,
           use_normalized_coordinates=True,
           max_boxes_to_draw=200,
-          min_score_thresh=.6,
+          min_score_thresh = score,
           agnostic_mode=False)
 
     # %%
