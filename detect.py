@@ -1,3 +1,25 @@
+""" usage: detect.py [-h] [-c CAMERA]
+
+Capturing camera to check if a mask is weared or not
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c CAMERA, --camera CAMERA
+			choose which camera to use. Default 0
+"""
+import argparse
+
+if __name__ == '__main__':
+	# Initiate argument parser
+	parser = argparse.ArgumentParser(description="Capturing camera to check if a mask is weared or not",
+                                     formatter_class=argparse.RawTextHelpFormatter)
+	parser.add_argument(
+		'-c', '--camera',
+		help = 'choose which camera to use. Default 0',
+		default= 0,
+		type=int
+	)
+	args = parser.parse_args()
 
 import os
 
@@ -22,7 +44,8 @@ LABEL_MAP_NAME = 'label_map.pbtxt'
 
 paths = {
     'ANNOTATION_PATH': os.path.join('Tensorflow', 'workspace','annotations'),
-    'CHECKPOINT_PATH': os.path.join('Tensorflow', 'workspace','models',CUSTOM_MODEL_NAME)
+    #'CHECKPOINT_PATH': os.path.join('Tensorflow', 'workspace','models',CUSTOM_MODEL_NAME)
+    'CHECKPOINT_PATH': os.path.join('Tensorflow', 'workspace','exported-models', 'my_model', 'checkpoint')
  }
 
 files = {
@@ -46,7 +69,7 @@ print()
 # ~~~~~~~~~~~~~~~~~~~~
 print("Trying restoring the checkpoint...", end='\t')
 ckpt = tf.compat.v2.train.Checkpoint(model=detection_model)
-ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-15')).expect_partial()
+ckpt.restore(os.path.join(paths['CHECKPOINT_PATH'], 'ckpt-0')).expect_partial()
 print("[RESTORED]")
 print()
 
@@ -73,7 +96,11 @@ print()
 # Define the video stream
 # ~~~~~~~~~~~~~~~~~~~~~~~
 print("Trying opening the camera...", end='\t')
-cap = cv2.VideoCapture(14)
+cap = cv2.VideoCapture(args.camera)
+if not cap.isOpened():
+	print("[ERROR]")
+	exit()
+
 print("[OPENED]")
 print()
 
